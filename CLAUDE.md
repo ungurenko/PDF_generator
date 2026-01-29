@@ -4,27 +4,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Обзор проекта
 
-PDF Styler — React-компонент для стилизации документов с AI-анализом структуры. Преобразует txt/md/docx/csv в красиво оформленные PDF.
+PDF Styler — React-приложение для стилизации документов с AI-анализом структуры. Преобразует txt/md/docx/csv в красиво оформленные PDF.
 
-**Статус:** Standalone компонент без инфраструктуры сборки (нет package.json, тестов).
+**Стек:** Vite + React + TypeScript
 
-## Зависимости
+## Команды
 
-Для работы компонента требуются:
-
-```
-react (16.8+ с hooks)
-lucide-react (иконки)
-mammoth (парсинг DOCX)
-papaparse (парсинг CSV)
-jsPDF (загружается из CDN v2.5.1)
+```bash
+npm install      # Установка зависимостей
+npm run dev      # Dev-сервер (localhost:5173)
+npm run build    # Сборка в dist/
+npm run preview  # Превью production-сборки
 ```
 
-API: Open Router (`deepseek/deepseek-chat-v3-0324`)
+## Структура проекта
+
+```
+├── src/
+│   ├── main.tsx           # Точка входа
+│   ├── App.tsx            # Корневой компонент
+│   ├── pdf_styler.tsx     # Основной компонент (~870 строк)
+│   └── vite-env.d.ts      # TypeScript типы для Vite
+├── index.html             # HTML-шаблон
+├── vite.config.ts         # Конфигурация Vite
+├── tsconfig.json          # TypeScript конфигурация
+└── package.json           # Зависимости и скрипты
+```
 
 ## Архитектура компонента
 
-`pdf_styler.tsx` (~870 строк) содержит:
+`src/pdf_styler.tsx` содержит:
 
 | Функция/Компонент | Назначение |
 |-------------------|------------|
@@ -67,17 +76,25 @@ AI-анализ использует Open Router API с моделью DeepSeek 
 - Формат: OpenAI-совместимый (messages с system/user roles)
 - Ключ: переменная окружения `VITE_OPENROUTER_API_KEY`
 
-**Для Vercel:** добавить `VITE_OPENROUTER_API_KEY` в Settings → Environment Variables.
-
 Fallback на `parseSimple()` при недоступности API. Текст обрезается до 15000 символов.
+
+## Деплой на Vercel
+
+**Настройки Vercel:**
+- Framework Preset: **Vite**
+- Build Command: `vite build`
+- Output Directory: `dist`
+- Environment Variables: `VITE_OPENROUTER_API_KEY`
 
 ## Горячие клавиши
 
 - `←/→` — переключение тем
 - `Space` — создать PDF
 
-## Известные ограничения
+## Зависимости
 
-- Нет инфраструктуры сборки — компонент нужно импортировать в существующее React-приложение
-- jsPDF загружается из CDN динамически
-- Требуется переменная окружения `VITE_OPENROUTER_API_KEY` с ключом Open Router
+- `react`, `react-dom` — React 18
+- `lucide-react` — иконки
+- `mammoth` — парсинг DOCX
+- `papaparse` — парсинг CSV
+- `jsPDF` — загружается из CDN v2.5.1
